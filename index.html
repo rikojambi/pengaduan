@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Pengaduan Sarana Sekolah - UKK RPL</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====================================================================
+       KOP SURAT LAPORAN (Hanya muncul saat dicetak / window.print)
+       ==================================================================== -->
+  <div class="print-header">
+    <h1>SMK NEGERI REKAYASA PERANGKAT LUNAK</h1>
+    <p>Jl. Pendidikan No. 45, Kota Pembelajaran | Telp: (021) 7890123</p>
+    <p><strong>REKAPITULASI LAPORAN PENGADUAN SARANA DAN PRASARANA SEKOLAH</strong></p>
+  </div>
+
+  <!-- ====================================================================
+       SITE HEADER & NAVBAR
+       ==================================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>SI-PENGADUAN SARPRAS</h1>
+            <p>Sistem Informasi Aspirasi & Pengaduan Sarana Sekolah (UKK RPL)</p>
+          </div>
+        </div>
+
+        <div class="nav-actions">
+          <div class="role-pill">
+            <span id="userRoleBadge" class="role-badge siswa">SISWA</span>
+            <span id="userRoleDisplay" style="font-weight: 600;">Ahmad Fauzi (XII RPL 1)</span>
+          </div>
+
+          <button id="btnSwitchRole" class="btn-switcher" title="Ganti Pengguna atau Mode">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <polyline points="17 11 19 13 23 9"></polyline>
+            </svg>
+            Ganti Mode / Login
+          </button>
+
+          <button id="btnResetDemo" class="btn btn-secondary btn-sm" title="Kembalikan Mock Data ke Awal">
+            🔄 Reset Demo
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ====================================================================
+       TAB NAVIGATION
+       ==================================================================== -->
+  <div class="app-tabs-wrapper no-print">
+    <div class="container">
+      <ul class="app-tabs" id="navTabsContainer">
+        <!-- Rendered dynamically by JavaScript -->
+      </ul>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MAIN CONTENT CONTAINER
+       ==================================================================== -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- ================================================================
+           VIEW 1: FORM ASPIRASI SISWA
+           ================================================================ -->
+      <section id="siswa-form-view" class="view-section active">
+        <div class="section-header">
+          <div>
+            <h2>Formulir Pengaduan Sarana Sekolah</h2>
+            <p>Laporkan kendala, fasilitas rusak, atau usulan perbaikan sarana di lingkungan sekolah.</p>
+          </div>
+        </div>
+
+        <div class="card" style="max-width: 860px; margin: 0 auto;">
+          <h3 class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Isi Laporan Pengaduan
+          </h3>
+
+          <form id="formAspirasiSiswa">
+            <div class="form-grid">
+              
+              <!-- Identitas Siswa -->
+              <div class="form-group">
+                <label class="form-label" for="inputNis">Nomor Induk Siswa (NIS)</label>
+                <input type="text" id="inputNis" class="form-control" readonly>
+                <span class="form-help">Sesuai akun siswa yang sedang aktif.</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="inputKelas">Kelas</label>
+                <input type="text" id="inputKelas" class="form-control" readonly>
+              </div>
+
+              <!-- Pilihan Kategori Sarana -->
+              <div class="form-group full-width">
+                <label class="form-label" for="inputKategori">Kategori Sarana <span class="required">*</span></label>
+                <select id="inputKategori" class="form-control" required>
+                  <!-- Diisi dinamis dari data.js -->
+                </select>
+              </div>
+
+              <!-- Lokasi Spesifik Sarana -->
+              <div class="form-group full-width">
+                <label class="form-label" for="inputLokasi">Lokasi Spesifik Sarana <span class="required">*</span></label>
+                <input type="text" id="inputLokasi" class="form-control" placeholder="Contoh: Gedung B Lt. 2 Ruang XII RPL 1, Lab Komputer 2 Meja 14" required>
+                <span class="form-help">Tuliskan lokasi secara jelas agar teknisi sarpras mudah menemukan lokasi kerusakan.</span>
+              </div>
+
+              <!-- Keterangan / Deskripsi Kerusakan -->
+              <div class="form-group full-width">
+                <label class="form-label" for="inputKeterangan">Keterangan Kerusakan / Pengaduan <span class="required">*</span></label>
+                <textarea id="inputKeterangan" class="form-control" rows="4" placeholder="Jelaskan secara detail kondisi kerusakan sarana, jumlah unit, dan dampaknya terhadap kegiatan belajar mengajar..." required></textarea>
+                <span class="form-help">Minimal 8 karakter. Mohon gunakan bahasa yang santun dan jelas.</span>
+              </div>
+
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+              <button type="reset" class="btn btn-secondary">Bersihkan Form</button>
+              <button type="submit" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Kirim Pengaduan Aspirasi
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 2: RIWAYAT & STATUS SISWA
+           ================================================================ -->
+      <section id="siswa-riwayat-view" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Riwayat & Status Pengaduan Saya</h2>
+            <p>Pantau progres verifikasi, perbaikan, dan umpan balik langsung dari tim sarana prasarana sekolah.</p>
+          </div>
+          <div>
+            <span id="siswaRiwayatCount" class="badge-status badge-proses" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">0 Pengaduan</span>
+          </div>
+        </div>
+
+        <div id="siswaRiwayatList" class="aspirasi-card-list">
+          <!-- Rendered dynamically by JavaScript -->
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 3: DASHBOARD ADMIN & FILTER
+           ================================================================ -->
+      <section id="admin-dashboard-view" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Dashboard Manajemen Aspirasi Sarana (Admin)</h2>
+            <p>Kelola seluruh laporan kerusakan sarana dari siswa, ubah status perbaikan, dan berikan umpan balik.</p>
+          </div>
+        </div>
+
+        <!-- Kartu Statistik -->
+        <div class="grid-stats">
+          <div class="stat-card">
+            <div class="stat-icon blue">📊</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statTotal">0</div>
+              <div class="stat-label">Total Pengaduan Masuk</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon amber">⏳</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statMenunggu">0</div>
+              <div class="stat-label">Status Menunggu</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon cyan">🔧</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statProses">0</div>
+              <div class="stat-label">Sedang Diproses</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statSelesai">0</div>
+              <div class="stat-label">Selesai Diperbaiki</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">📈</div>
+            <div class="stat-info">
+              <div class="stat-value" id="statPersen">0%</div>
+              <div class="stat-label">Tingkat Penyelesaian</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Filter Interaktif (Sesuai Spesifikasi UKK RPL) -->
+        <div class="filter-card">
+          <div style="font-weight: 700; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              Filter & Pencarian Aspirasi
+            </div>
+            <span id="filterResultCount" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Menampilkan data...</span>
+          </div>
+
+          <div class="filter-grid">
+            <!-- Filter Tanggal -->
+            <div class="form-group">
+              <label class="form-label" for="filterDate">Filter per Tanggal</label>
+              <input type="date" id="filterDate" class="form-control">
+            </div>
+
+            <!-- Filter Bulan -->
+            <div class="form-group">
+              <label class="form-label" for="filterMonth">Filter per Bulan</label>
+              <select id="filterMonth" class="form-control">
+                <option value="">Semua Bulan</option>
+                <option value="2026-10">Oktober 2026</option>
+                <option value="2026-09">September 2026</option>
+                <option value="2026-08">Agustus 2026</option>
+                <option value="2026-07">Juli 2026</option>
+                <option value="2026-11">November 2026</option>
+                <option value="2026-12">Desember 2026</option>
+              </select>
+            </div>
+
+            <!-- Filter Siswa -->
+            <div class="form-group">
+              <label class="form-label" for="filterSiswa">Filter per Siswa</label>
+              <select id="filterSiswa" class="form-control">
+                <!-- Diisi dari js/app.js -->
+              </select>
+            </div>
+
+            <!-- Filter Kategori -->
+            <div class="form-group">
+              <label class="form-label" for="filterKategori">Filter per Kategori</label>
+              <select id="filterKategori" class="form-control">
+                <!-- Diisi dari js/app.js -->
+              </select>
+            </div>
+
+            <!-- Pencarian Cepat -->
+            <div class="form-group">
+              <label class="form-label" for="searchKeyword">Pencarian Cepat</label>
+              <input type="text" id="searchKeyword" class="form-control" placeholder="Ketik lokasi / keluhan...">
+            </div>
+
+            <!-- Tombol Reset -->
+            <div class="form-group" style="justify-content: flex-end;">
+              <button id="btnResetFilter" class="btn btn-secondary" style="width: 100%;">
+                🔄 Reset Filter
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabel Aspirasi Keseluruhan -->
+        <div class="card" style="padding: 1rem 0;">
+          <div style="padding: 0 1.25rem 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color);">
+            <h3 style="font-size: 1.05rem; font-weight: 700;">Daftar Seluruh Laporan Aspirasi Masuk</h3>
+          </div>
+
+          <div class="table-responsive" style="border: none; border-radius: 0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px; text-align: center;">No</th>
+                  <th>ID & Tanggal</th>
+                  <th>Siswa Pelapor</th>
+                  <th>Kategori Sarana</th>
+                  <th>Lokasi & Keterangan</th>
+                  <th>Status</th>
+                  <th>Umpan Balik Admin</th>
+                  <th style="text-align: center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Rendered dynamically by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           VIEW 4: HISTORI & CETAK LAPORAN ADMIN
+           ================================================================ -->
+      <section id="admin-histori-view" class="view-section">
+        <div class="section-header">
+          <div>
+            <h2>Histori & Rekapitulasi Pengaduan Sarana</h2>
+            <p>Rekam jejak seluruh aspirasi siswa yang telah diproses untuk pelaporan UKK dan evaluasi sarana sekolah.</p>
+          </div>
+          <div class="no-print">
+            <button id="btnPrintReport" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+              Cetak Rekap Laporan
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="padding: 1rem 0;">
+          <div class="table-responsive" style="border: none;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 45px; text-align: center;">No</th>
+                  <th>ID</th>
+                  <th>Tgl Lapor</th>
+                  <th>Pelapor (NIS / Kelas)</th>
+                  <th>Kategori</th>
+                  <th>Lokasi</th>
+                  <th>Keterangan Kerusakan</th>
+                  <th>Status Akhir</th>
+                  <th>Umpan Balik (Tindakan)</th>
+                </tr>
+              </thead>
+              <tbody id="historiTableBody">
+                <!-- Rendered dynamically by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ====================================================================
+       MODAL 1: TANGGAPAN & UBAH STATUS (ADMIN)
+       ==================================================================== -->
+  <div id="feedbackModalOverlay" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Umpan Balik & Update Status Aspirasi</h3>
+        <button type="button" class="btn-close" onclick="closeFeedbackModal()">✕</button>
+      </div>
+
+      <form id="formFeedbackModal">
+        <div class="modal-body">
+          <!-- Summary Detail -->
+          <div class="detail-summary-card">
+            <div class="detail-row">
+              <div class="detail-label">ID Pelaporan:</div>
+              <div class="detail-val" id="modalPelaporanId" style="color: var(--primary); font-weight: 700;">#1001</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Tanggal Lapor:</div>
+              <div class="detail-val" id="modalTanggalLapor">-</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Siswa Pelapor:</div>
+              <div class="detail-val" id="modalSiswaDetail">-</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-label">Fasilitas / Lokasi:</div>
+              <div class="detail-val" id="modalKategoriLokasi">-</div>
+            </div>
+            <div class="detail-row" style="margin-top: 0.5rem;">
+              <div class="detail-label">Keluhan:</div>
+              <div class="detail-val" id="modalKeluhan" style="font-style: italic;">-</div>
+            </div>
+          </div>
+
+          <!-- Form Edit Status -->
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label" for="selectStatusAspirasi">Ubah Status Penyelesaian <span class="required">*</span></label>
+            <select id="selectStatusAspirasi" class="form-control" required>
+              <option value="Menunggu">Menunggu (Verifikasi Awal)</option>
+              <option value="Proses">Proses (Dalam Penanganan / Perbaikan)</option>
+              <option value="Selesai">Selesai (Sarana Telah Normal / Berfungsi)</option>
+            </select>
+            <span class="form-help">Status akan langsung diperbarui di timeline siswa.</span>
+          </div>
+
+          <!-- Form Edit Feedback -->
+          <div class="form-group">
+            <label class="form-label" for="inputFeedbackAdmin">Catatan Umpan Balik (Feedback) <span class="required">*</span></label>
+            <textarea id="inputFeedbackAdmin" class="form-control" rows="4" placeholder="Tuliskan keterangan tindakan, progres teknisi, perkiraan waktu selesai, atau klarifikasi..." required></textarea>
+            <span class="form-help">Pesan ini akan terbaca oleh siswa pelapor di menu Riwayat & Status.</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeFeedbackModal()">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            💾 Simpan Umpan Balik & Status
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       MODAL 2: GANTI PENGGUNA / ROLE SWITCHER SIMULATOR
+       ==================================================================== -->
+  <div id="roleModalOverlay" class="modal-overlay">
+    <div class="modal-container" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3>Simulasi Login & Ganti Peran</h3>
+        <button type="button" class="btn-close" onclick="closeRoleModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Pilih peran untuk menguji alur kerja sistem sesuai spesifikasi penguji UKK RPL:
+        </p>
+
+        <!-- Pilihan Mode Siswa -->
+        <label class="card" style="display: block; cursor: pointer; padding: 1rem; margin-bottom: 1rem; border-color: #bfdbfe;">
+          <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+            <input type="radio" name="roleChoice" value="siswa" checked style="margin-top: 0.25rem;">
+            <div>
+              <div style="font-weight: 700; color: #1e40af;">Halaman Siswa</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem;">
+                Mengirim form aspirasi dan memantau status penyelesaian milik siswa yang dipilih.
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.75rem;">Pilih Akun Siswa (NIS & Kelas):</label>
+                <select id="switchSiswaSelect" class="form-control" style="font-size: 0.82rem; padding: 0.4rem;">
+                  <!-- Diisi dinamis -->
+                </select>
+              </div>
+            </div>
+          </div>
+        </label>
+
+        <!-- Pilihan Mode Admin -->
+        <label class="card" style="display: block; cursor: pointer; padding: 1rem; border-color: #fecaca;">
+          <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+            <input type="radio" name="roleChoice" value="admin" style="margin-top: 0.25rem;">
+            <div>
+              <div style="font-weight: 700; color: #991b1b;">Halaman Administrator Sarpras</div>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">
+                Melihat seluruh pengaduan dengan filter (tanggal, bulan, siswa, kategori), memberi feedback, mengubah status, dan cetak histori.
+              </div>
+            </div>
+          </div>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeRoleModal()">Batal</button>
+        <button type="button" class="btn btn-primary" onclick="handleApplyRoleSwitch()">
+          Terapkan Peran
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       TOAST NOTIFICATION CONTAINER
+       ==================================================================== -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="site-footer no-print">
+    <div class="container">
+      <p>&copy; 2026 Aplikasi Pengaduan Sarana Sekolah — Uji Kompetensi Keahlian (UKK) Rekayasa Perangkat Lunak.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
